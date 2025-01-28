@@ -11,10 +11,19 @@ config_version=5
 [application]
 
 config/name="Arcane Territories"
+config/version="0.1.0.0"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [editor]
 
 version_control/plugin_name="GitPlugin"
 version_control/autoload_on_startup=true
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
