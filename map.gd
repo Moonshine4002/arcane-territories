@@ -7,7 +7,7 @@ func _ready() -> void:
 	for cell in tile.get_used_cells():
 		var tile_data = tile.get_cell_tile_data(cell)
 		if tile_data.get_custom_data("name") == "Player9":
-			$Player.set_grid_position(Vector2(cell))
+			$Player.set_cell_position(Vector2(cell))
 
 			var tile_set = tile.tile_set
 			var atlas_source: TileSetAtlasSource = tile_set.get_source($Level1.source_id)
