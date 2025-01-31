@@ -22,6 +22,10 @@ var inputs: Dictionary = {
 	"down-left": Vector2.DOWN + Vector2.LEFT,
 	"down-right": Vector2.DOWN + Vector2.RIGHT,
 }
+var xy_components = [
+	Vector2(1, 0),
+	Vector2(0, 1),
+]
 
 @onready var ray: RayCast2D = $RayCast2D
 
@@ -43,19 +47,15 @@ func _process(delta: float) -> void:
 		if Input.is_action_pressed(dir):
 			displacement += inputs[dir]
 
-	var displacement_components = [
-		Vector2(displacement.x, 0).normalized(),
-		Vector2(0, displacement.y).normalized(),
-	]
-	displacement_components.shuffle()
-	for component in displacement_components:
-		if component == Vector2.ZERO:
-			continue
-		ray.target_position = component * tile_size
-		ray.force_raycast_update()
-		if !ray.is_colliding():
-			set_cell_position(cell_position + component)
-			break
+	var xy_component = xy_components.pop_front()
+	xy_components.append(xy_component)
+	var component = xy_component * displacement
+	if component == Vector2.ZERO:
+		return
+	ray.target_position = component * tile_size
+	ray.force_raycast_update()
+	if !ray.is_colliding():
+		set_cell_position(cell_position + component)
 
 
 func get_cell_position() -> Vector2:
