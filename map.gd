@@ -1,9 +1,17 @@
 extends Node2D
 
+var current_scene: PackedScene
+
 
 func _ready() -> void:
-	pass
+	current_scene = load("res://level_1.tscn")
+	add_current_scene()
 
 
 func _process(delta: float) -> void:
 	pass
+
+
+func add_current_scene():
+	var current_scene = current_scene.instantiate()
+	add_child(current_scene)
