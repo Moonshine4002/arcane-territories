@@ -4,23 +4,34 @@ extends Node2D
 
 # texture
 var source_id = 0
-@onready var tile: TileMapLayer = $Character
-@onready var tile_set = tile.tile_set
+@onready var character_tile: TileMapLayer = $Character
+@onready var ground_tile: TileMapLayer = $Ground
+@onready var rail_tile: TileMapLayer = $Rail
+@onready var object_tile: TileMapLayer = $Object
+@onready var tile_set = character_tile.tile_set
 @onready var atlas_source: TileSetAtlasSource = tile_set.get_source(source_id)
 
 
 func _ready() -> void:
-	for cell in tile.get_used_cells():
+	for cell in character_tile.get_used_cells():
 		init_player(cell)
-	tile.clear()
+	character_tile.clear()
 
 
 func _process(delta: float) -> void:
-	pass
+	for player in get_tree().get_nodes_in_group("players"):
+		var tile_data = object_tile.get_cell_tile_data(player.cell_position)
+		if not tile_data:
+			tile_data = rail_tile.get_cell_tile_data(player.cell_position)
+		if not tile_data:
+			tile_data = ground_tile.get_cell_tile_data(player.cell_position)
+		var speed = tile_data.get_custom_data("speed")
+		player.calculate_tween_duration(speed)
+		player.control()
 
 
 func init_player(cell):
-	var tile_data = tile.get_cell_tile_data(cell)
+	var tile_data = character_tile.get_cell_tile_data(cell)
 	var name = tile_data.get_custom_data("name")
 	if "Player" not in name:
 		return
@@ -30,8 +41,8 @@ func init_player(cell):
 	var texture := AtlasTexture.new()
 	texture.atlas = atlas_source.texture
 	texture.region = Rect2(
-		tile.get_cell_atlas_coords(cell) * tile.tile_set.tile_size,
-		tile.tile_set.tile_size,
+		character_tile.get_cell_atlas_coords(cell) * character_tile.tile_set.tile_size,
+		character_tile.tile_set.tile_size,
 	)
 	player.get_node("Sprite2D").texture = texture
 	player.get_node("Sprite2D").scale = Vector2.ONE
@@ -40,11 +51,11 @@ func init_player(cell):
 	player.data = {
 		"health": 100,
 		"attack": 10,
-		"defense": 9,
+		"defense": 5,
 		"level": 1,
 		"experience": 0,
 		"mana": 10,
-		"speed": 10,
+		"speed": 1,
 		"dodge": 10,
 	}
 

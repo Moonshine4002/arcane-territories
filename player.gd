@@ -46,7 +46,6 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	control()
 	target_position = target_position.rotated(0.1)
 	if scan_area(target_position):
 		ray_cast_area.emit(self, ray.get_collider())
@@ -55,10 +54,6 @@ func _process(delta: float) -> void:
 func control():
 	if moving:
 		return
-	if Input.is_key_pressed(KEY_SHIFT):
-		tween_duration = seconds_per_tile * shift_modifier
-	else:
-		tween_duration = seconds_per_tile
 
 	var displacement = Vector2.ZERO
 	for dir in inputs.keys():
@@ -114,3 +109,11 @@ func move(target_position) -> void:
 	#$AnimationPlayer.play(dir)
 	await tween.finished
 	moving = false
+
+
+func calculate_tween_duration(speed_modifier):
+	if Input.is_key_pressed(KEY_SHIFT):
+		tween_duration = seconds_per_tile * shift_modifier
+	else:
+		tween_duration = seconds_per_tile
+	tween_duration /= speed_modifier
