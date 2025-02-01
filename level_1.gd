@@ -27,7 +27,26 @@ func _process(delta: float) -> void:
 			tile_data = ground_tile.get_cell_tile_data(player.cell_position)
 		var speed = tile_data.get_custom_data("speed")
 		player.calculate_tween_duration(speed)
+
+		var previous_position = player.cell_position
 		player.control()
+		var present_position = player.cell_position
+
+		if previous_position == present_position:
+			continue
+		if tile_data.get_custom_data("name") == "cart":
+			var rail_data = rail_tile.get_cell_tile_data(present_position)
+			var object_data = object_tile.get_cell_tile_data(present_position)
+			if !rail_data:
+				continue
+			if rail_data.get_custom_data("name") == "rail_straight":
+				if !object_data or object_data.get_custom_data("name") != "cart":
+					object_tile.erase_cell(previous_position)
+				object_tile.set_cell(present_position, source_id, Vector2i(6, 4))
+			elif rail_data.get_custom_data("name") == "rail_bent":
+				if !object_data or object_data.get_custom_data("name") != "cart":
+					object_tile.erase_cell(previous_position)
+				object_tile.set_cell(present_position, source_id, Vector2i(8, 4))
 
 
 func init_player(cell):
