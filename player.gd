@@ -71,6 +71,8 @@ func control() -> Vector2:
 	var component = xy_components[xy_index] * displacement
 
 	if component == Vector2.ZERO:
+		component = xy_components[(xy_index + 1) % 2] * displacement
+	if component == Vector2.ZERO:
 		previous_input[xy_index] = component
 		pressed[xy_index] = false
 		return cell_position
