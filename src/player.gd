@@ -26,11 +26,11 @@ var inputs: Dictionary = {
 	"down-right": Vector2.DOWN + Vector2.RIGHT,
 }
 var xy_index: int = 0
-var xy_components = [
+var xy_components: Array[Vector2] = [
 	Vector2(1, 0),
 	Vector2(0, 1),
 ]
-var previous_input = [
+var previous_input: Array[Vector2] = [
 	Vector2(0, 0),
 	Vector2(0, 0),
 ]
@@ -62,16 +62,8 @@ func control() -> Vector2:
 	if moving:
 		return cell_position
 
-	var displacement = Vector2.ZERO
-	for dir in inputs.keys():
-		if Input.is_action_pressed(dir):
-			displacement += inputs[dir]
+	var component: Vector2 = input()
 
-	xy_index = (xy_index + 1) % 2
-	var component = xy_components[xy_index] * displacement
-
-	if component == Vector2.ZERO:
-		component = xy_components[(xy_index + 1) % 2] * displacement
 	if component == Vector2.ZERO:
 		previous_input[xy_index] = component
 		pressed[xy_index] = false
@@ -88,7 +80,22 @@ func control() -> Vector2:
 	return cell_position
 
 
-func scan_area(target_position) -> bool:
+func input() -> Vector2:
+	var displacement: Vector2 = Vector2.ZERO
+	for dir in inputs.keys():
+		if Input.is_action_pressed(dir):
+			displacement += inputs[dir]
+	xy_index = (xy_index + 1) % 2
+	var component: Vector2 = xy_components[xy_index] * displacement
+
+	# check the other component if zero
+	if component == Vector2.ZERO:
+		component = xy_components[(xy_index + 1) % 2] * displacement
+
+	return component
+
+
+func scan_area(target_position: Vector2) -> bool:
 	ray.collide_with_areas = true
 	ray.collide_with_bodies = true
 	ray.target_position = target_position
@@ -100,7 +107,7 @@ func scan_area(target_position) -> bool:
 	return true
 
 
-func scan_area_and_body(target_position) -> bool:
+func scan_area_and_body(target_position: Vector2) -> bool:
 	ray.collide_with_areas = true
 	ray.collide_with_bodies = true
 	ray.target_position = target_position
@@ -119,11 +126,11 @@ func set_cell_position(cell: Vector2) -> void:
 		return
 	previous_component = cell - cell_position
 	cell_position = cell
-	move((cell + Vector2.ONE / 2) * tile_size)
+	move_tween((cell + Vector2.ONE / 2) * tile_size)
 
 
-func move(target_position) -> void:
-	var tween = get_tree().create_tween().bind_node(self).set_trans(Tween.TRANS_SINE)
+func move_tween(target_position: Vector2) -> void:
+	var tween: Tween = get_tree().create_tween().bind_node(self).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(self, "position", target_position, tween_duration)
 	moving = true
 	#$AnimationPlayer.play(dir)
@@ -131,7 +138,7 @@ func move(target_position) -> void:
 	moving = false
 
 
-func calculate_tween_duration(speed_modifier):
+func calculate_tween_duration(speed_modifier: float):
 	if Input.is_key_pressed(KEY_SHIFT):
 		tween_duration = seconds_per_tile * shift_modifier
 	else:
