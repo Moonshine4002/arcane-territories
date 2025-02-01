@@ -1,1 +1,1 @@
-# arcane-territories
+# Arcane Territories

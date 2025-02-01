@@ -4,7 +4,7 @@ var current_scene: PackedScene
 
 
 func _ready() -> void:
-	current_scene = load("res://level_1.tscn")
+	current_scene = load("res://map/kenney_tiny-dungeon/level_1.tscn")
 	add_current_scene()
 
 
