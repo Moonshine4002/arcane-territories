@@ -25,10 +25,17 @@ var inputs: Dictionary = {
 	"down-left": Vector2.DOWN + Vector2.LEFT,
 	"down-right": Vector2.DOWN + Vector2.RIGHT,
 }
+var xy_index: int = 0
 var xy_components = [
 	Vector2(1, 0),
 	Vector2(0, 1),
 ]
+var previous_input = [
+	Vector2(0, 0),
+	Vector2(0, 0),
+]
+var pressed: Array[bool] = [false, false]
+var previous_component: Vector2
 
 # collision
 @onready var ray: RayCast2D = $RayCast2D
@@ -46,29 +53,37 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	target_position = target_position.rotated(0.1)
+	target_position = target_position.rotated(PI / 2)
 	if scan_area(target_position):
 		ray_cast_area.emit(self, ray.get_collider())
 
 
-func control():
+func control() -> Vector2:
 	if moving:
-		return
+		return cell_position
 
 	var displacement = Vector2.ZERO
 	for dir in inputs.keys():
 		if Input.is_action_pressed(dir):
 			displacement += inputs[dir]
 
-	var xy_component = xy_components.pop_front()
-	xy_components.append(xy_component)
-	var component = xy_component * displacement
+	xy_index = (xy_index + 1) % 2
+	var component = xy_components[xy_index] * displacement
+
 	if component == Vector2.ZERO:
-		return
+		previous_input[xy_index] = component
+		pressed[xy_index] = false
+		return cell_position
 	component = component.normalized()
+	if component == previous_input[xy_index]:
+		pressed[xy_index] = true
+	else:
+		previous_input[xy_index] = component
+		pressed[xy_index] = false
 
 	if not scan_area_and_body(component * tile_size):
-		set_cell_position(cell_position + component)
+		return cell_position + component
+	return cell_position
 
 
 func scan_area(target_position) -> bool:
@@ -98,6 +113,9 @@ func get_cell_position() -> Vector2:
 
 
 func set_cell_position(cell: Vector2) -> void:
+	if cell_position == cell:
+		return
+	previous_component = cell - cell_position
 	cell_position = cell
 	move((cell + Vector2.ONE / 2) * tile_size)
 

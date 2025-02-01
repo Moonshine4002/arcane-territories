@@ -20,33 +20,63 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	for player in get_tree().get_nodes_in_group("players"):
-		var tile_data = object_tile.get_cell_tile_data(player.cell_position)
+		var previous_position = player.cell_position
+
+		# calculate tween duration
+		var tile_data = object_tile.get_cell_tile_data(previous_position)
 		if not tile_data:
-			tile_data = rail_tile.get_cell_tile_data(player.cell_position)
+			tile_data = rail_tile.get_cell_tile_data(previous_position)
 		if not tile_data:
-			tile_data = ground_tile.get_cell_tile_data(player.cell_position)
+			tile_data = ground_tile.get_cell_tile_data(previous_position)
 		var speed = tile_data.get_custom_data("speed")
 		player.calculate_tween_duration(speed)
 
-		var previous_position = player.cell_position
-		player.control()
+		# control
+		if player.moving:
+			return
+		var target_cell = control(player, tile_data)
+		player.set_cell_position(target_cell)
 		var present_position = player.cell_position
+		control_cart(tile_data, previous_position, present_position)
 
-		if previous_position == present_position:
-			continue
-		if tile_data.get_custom_data("name") == "cart":
-			var rail_data = rail_tile.get_cell_tile_data(present_position)
-			var object_data = object_tile.get_cell_tile_data(present_position)
-			if !rail_data:
-				continue
-			if rail_data.get_custom_data("name") == "rail_straight":
-				if !object_data or object_data.get_custom_data("name") != "cart":
-					object_tile.erase_cell(previous_position)
-				object_tile.set_cell(present_position, source_id, Vector2i(6, 4))
-			elif rail_data.get_custom_data("name") == "rail_bent":
-				if !object_data or object_data.get_custom_data("name") != "cart":
-					object_tile.erase_cell(previous_position)
-				object_tile.set_cell(present_position, source_id, Vector2i(8, 4))
+
+func control(player, tile_data) -> Vector2:
+	var target_cell
+	target_cell = player.control()
+
+	# rail
+	var previous_position = player.cell_position
+	if player.pressed[player.xy_index] and tile_data.get_custom_data("name") == "cart":
+		var rail_data = rail_tile.get_cell_tile_data(previous_position)
+		if rail_data and "rail" in rail_data.get_custom_data("name"):
+			var available_input = []
+			for dir in player.inputs:
+				if dir in rail_data.get_custom_data("control"):
+					available_input.append(player.inputs[dir])
+			available_input.erase(-player.previous_component)
+			if available_input.size() != 1:
+				return target_cell
+			var input = available_input[0]
+			target_cell = player.cell_position + input
+	return target_cell
+
+
+func control_cart(tile_data, previous_position, present_position) -> void:
+	if previous_position == present_position:
+		return
+	if tile_data.get_custom_data("name") == "cart":
+		var rail_data = rail_tile.get_cell_tile_data(present_position)
+		var object_data = object_tile.get_cell_tile_data(present_position)
+		if not rail_data:
+			return
+		if rail_data.get_custom_data("name") == "rail_straight":
+			if not object_data or object_data.get_custom_data("name") != "cart":
+				object_tile.erase_cell(previous_position)
+			object_tile.set_cell(present_position, source_id, Vector2i(6, 4))
+		elif rail_data.get_custom_data("name") == "rail_bent":
+			if not object_data or object_data.get_custom_data("name") != "cart":
+				object_tile.erase_cell(previous_position)
+			object_tile.set_cell(present_position, source_id, Vector2i(8, 4))
 
 
 func init_player(cell):
