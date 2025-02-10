@@ -85,6 +85,9 @@ func init_player(cell: Vector2):
 	player.data["cell"] = cell
 	player.data["cell_atlas_coords"] = character_tile.get_cell_atlas_coords(cell)
 
+	if player.name == "Player9":
+		player.controller_switch_dynamic()
+
 	player.connect_controller(_on_controller_player_request)
 
 	add_child(player)
