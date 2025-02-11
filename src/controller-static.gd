@@ -2,7 +2,6 @@ extends Controller
 
 
 func _ready() -> void:
-	tween = create_tween().set_trans(Tween.TRANS_SINE)
 	player_request.emit(player, "set_texture", [set_sprite_atlas])
 	#player_request.emit(player, "move", [move_to_cell, null, 0])
 

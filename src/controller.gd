@@ -100,8 +100,8 @@ func _move_to(target: Vector2, duration: float) -> void:
 	assert(not moving)
 	if tween:
 		tween.kill()
-		tween = create_tween().set_trans(Tween.TRANS_SINE)
-	tween.tween_property(player, "position", target, duration)
+	tween = create_tween()
+	tween.tween_property(player, "position", target, duration).set_trans(Tween.TRANS_SINE)
 	moving = true
 	#$AnimationPlayer.play(dir)
 	await tween.finished
