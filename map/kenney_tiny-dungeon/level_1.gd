@@ -128,7 +128,7 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			#	return
 
 			var input_para = parameters[3]
-			var previous_displacement = input_para["previous_displacement"]
+			var last_disp = input_para["last_disp"]
 			var pressed = input_para["pressed"]
 			var shift = input_para["shift"]
 
@@ -138,9 +138,7 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			if shift:
 				speed *= 0.3
 
-			component = control_rail(
-				player, cell, tile_data, component, previous_displacement, pressed
-			)
+			component = control_rail(player, cell, tile_data, component, last_disp, pressed)
 			var present_cell = cell + component
 
 			var teleport_flag = false
@@ -203,7 +201,7 @@ func control_rail(
 	cell: Vector2,
 	tile_data: TileData,
 	component: Vector2,
-	previous_displacement: Vector2,
+	last_disp: Vector2,
 	pressed: bool,
 ) -> Vector2:
 	if not pressed:
@@ -220,7 +218,7 @@ func control_rail(
 	for dir in INPUTS.keys():
 		if dir in rail_control:
 			available_input.append(INPUTS[dir])
-	available_input.erase(-previous_displacement)
+	available_input.erase(-last_disp)
 	if available_input.size() != 1:
 		return component
 	component = available_input[0]

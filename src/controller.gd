@@ -30,8 +30,8 @@ const XY_COMPONENTS: Array[Vector2] = [
 	Vector2(1, 0),
 	Vector2(0, 1),
 ]
-var previous_input: Vector2 = Vector2.ZERO
-var previous_displacement: Vector2 = Vector2.ZERO
+var last_input: Vector2 = Vector2.ZERO
+var last_disp: Vector2 = Vector2.ZERO
 var pressed: bool = false
 var tween: Tween
 
@@ -40,22 +40,22 @@ var ray_cast_target = Vector2.UP
 
 
 func control() -> Vector2:
-	var displacement: Vector2 = Vector2.ZERO
+	var disp: Vector2 = Vector2.ZERO
 	for dir in INPUTS.keys():
 		if Input.is_action_pressed(dir):
-			displacement += INPUTS[dir]
-	if displacement == Vector2.ZERO:
+			disp += INPUTS[dir]
+	if disp == Vector2.ZERO:
 		pressed = false
-		previous_input = Vector2.ZERO
-		previous_displacement = Vector2.ZERO
+		last_input = Vector2.ZERO
+		last_disp = Vector2.ZERO
 		return Vector2.ZERO
-	pressed = displacement == previous_input
-	previous_input = displacement
+	pressed = disp == last_input
+	last_input = disp
 
 	xy_index = (xy_index + 1) % 2
-	var component: Vector2 = displacement * XY_COMPONENTS[xy_index]
+	var component: Vector2 = disp * XY_COMPONENTS[xy_index]
 	if component == Vector2.ZERO:  # check the other component if zero
-		component = displacement * XY_COMPONENTS[(xy_index + 1) % 2]
+		component = disp * XY_COMPONENTS[(xy_index + 1) % 2]
 	assert(component != Vector2.ZERO)
 	component = component.normalized()
 
@@ -64,35 +64,30 @@ func control() -> Vector2:
 
 	var shift = Input.is_key_pressed(KEY_SHIFT)
 
-	(
-		player_request
-		. emit(
-			player,
-			"move",
-			[
-				move_by_cell_inc,
-				component,
-				cell,
-				{
-					"previous_displacement": previous_displacement,
-					"pressed": pressed,
-					"shift": shift,
-				},
-			],
-		)
-	)
+	var para_list = [
+		move_by_cell_inc,
+		component,
+		cell,
+		{
+			"last_disp": last_disp,
+			"pressed": pressed,
+			"shift": shift,
+		},
+	]
+	player_request.emit(player, "move", para_list)
+
 	return component
 
 
 func move_by_cell_inc(cell_inc: Vector2, duration: float, tile_size: int = tile_size) -> void:
 	cell += cell_inc
-	previous_displacement = cell_inc
+	last_disp = cell_inc
 	_move_to(player.position + cell_inc * tile_size, duration)
 
 
 func move_to_cell(cell_abs: Vector2, duration: float, tile_size: int = tile_size) -> void:
 	cell = cell_abs
-	previous_displacement = cell_abs - cell
+	last_disp = cell_abs - cell
 	_move_to((cell_abs + Vector2.ONE / 2) * tile_size, duration)
 
 
