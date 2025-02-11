@@ -1,5 +1,7 @@
 extends Node2D
 
+signal level_request(source: Node, type: String, parameters: Array)
+
 @export var player_scene: PackedScene
 
 # tile map
@@ -57,8 +59,11 @@ var character_data = {
 
 
 func _ready() -> void:
+	if name != "Level1":
+		character_tile.queue_free()
+		return
 	for cell in character_tile.get_used_cells():
-		init_player(cell)
+		add_player(cell)
 	character_tile.queue_free()
 
 	print(load_game(path))
@@ -68,29 +73,40 @@ func _process(delta: float) -> void:
 	pass
 
 
-func init_player(cell: Vector2):
-	var player = player_scene.instantiate()
+func connect_level(fun: Callable) -> void:
+	self.connect("level_request", fun)
 
-	var tile_data = character_tile.get_cell_tile_data(cell)
-	var name = tile_data.get_custom_data("name")
-	player.name = name
 
-	var data = load_game(path)
-	if data.has(name):
-		player.data = data[name]
-	else:
-		return
-		#player.data = character_data[name]
+func add_player(cell: Vector2, player = null):
+	if not player:
+		player = player_scene.instantiate()
 
-	player.data["cell"] = cell
-	player.data["cell_atlas_coords"] = character_tile.get_cell_atlas_coords(cell)
+		var tile_data = character_tile.get_cell_tile_data(cell)
+		var name = tile_data.get_custom_data("name")
+		player.name = name
 
-	if player.name == "Player9":
-		player.controller_switch_dynamic()
+		var data = load_game(path)
+		if data.has(name):
+			player.data = data[name]
+		else:
+			return
+			#player.data = character_data[name]
+
+		#player.data["cell"] = cell
+		player.data["cell_atlas_coords"] = character_tile.get_cell_atlas_coords(cell)
+
+		if player.name == "Player9":
+			player.controller_switch_dynamic()
 
 	player.connect_controller(_on_controller_player_request)
 
 	add_child(player)
+	player.get_node("Controller").move_to_cell(cell, 0)  # TODO: remove
+
+
+func remove_player(player: Node):
+	player.disconnect_controller(_on_controller_player_request)
+	remove_child(player)
 
 
 func _on_controller_player_request(source: Node, type: String, parameters: Array) -> void:
@@ -107,9 +123,9 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			var component = parameters[1]
 			var cell = parameters[2]
 			assert(component != Vector2.ZERO)
-			if not component:  # _ready
-				fun.call(player.data["cell"], cell)
-				return
+			#if not component:  # _ready
+			#	fun.call(player.data["cell"], cell)
+			#	return
 
 			var input_para = parameters[3]
 			var previous_displacement = input_para["previous_displacement"]
@@ -125,10 +141,30 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			component = control_rail(
 				player, cell, tile_data, component, previous_displacement, pressed
 			)
+			var present_cell = cell + component
+
+			var teleport_flag = false
+			if cell in [Vector2(12, 0), Vector2(13, 0)] and component == Vector2.UP:
+				teleport_flag = true
+				present_cell.y = 25
+				level_request.emit(self, "teleport", [player, "up", present_cell])
+			elif cell in [Vector2(12, 25), Vector2(13, 25)] and component == Vector2.DOWN:
+				teleport_flag = true
+				present_cell.y = 0
+				level_request.emit(self, "teleport", [player, "down", present_cell])
+			elif cell in [Vector2(0, 13), Vector2(0, 14)] and component == Vector2.LEFT:
+				teleport_flag = true
+				present_cell.x = 25
+				level_request.emit(self, "teleport", [player, "left", present_cell])
+			elif cell in [Vector2(25, 13), Vector2(25, 14)] and component == Vector2.RIGHT:
+				teleport_flag = true
+				present_cell.x = 0
+				level_request.emit(self, "teleport", [player, "right", present_cell])
+			if teleport_flag:
+				return
 
 			fun.call(component, 1 / speed)
 
-			var present_cell = cell + component
 			control_cart(tile_data, cell, present_cell)
 		"set_texture":
 			var fun = parameters[0]
@@ -145,6 +181,10 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			if target.data["health"] <= 0:
 				print(target.name, " is defeated")
 				target.queue_free()
+		#"add_player":
+		#	add_child(player)
+		#"remove_player":
+		#	player.queue_free()
 		_:
 			assert(false)
 
