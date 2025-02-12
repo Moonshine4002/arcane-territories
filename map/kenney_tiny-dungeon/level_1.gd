@@ -98,6 +98,11 @@ func add_player(cell: Vector2, player = null):
 		if player.name == "Player9":
 			player.controller_switch_dynamic()
 
+	if player:
+		player.get_node("Controller").pressed = false  # TODO: remove
+		player.get_node("Controller").last_input = Vector2.ZERO  # TODO: remove
+		player.get_node("Controller").last_disp = Vector2.ZERO  # TODO: remove
+
 	player.connect_controller(_on_controller_player_request)
 
 	add_child(player)
@@ -138,7 +143,7 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			if shift:
 				speed *= 0.3
 
-			component = control_rail(player, cell, tile_data, component, last_disp, pressed)
+			component = control_rail(player, cell, tile_data, component, last_disp)#, pressed)
 			var present_cell = cell + component
 
 			var teleport_flag = false
@@ -163,7 +168,6 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 
 			fun.call(component, 1 / speed)
 
-			control_cart(tile_data, cell, present_cell)
 		"set_texture":
 			var fun = parameters[0]
 			fun.call(atlas_source.texture, player.data["cell_atlas_coords"])
@@ -202,10 +206,13 @@ func control_rail(
 	tile_data: TileData,
 	component: Vector2,
 	last_disp: Vector2,
-	pressed: bool,
+	#pressed: bool,
 ) -> Vector2:
-	if not pressed:
-		return component
+	#if pressed:
+	#	assert(last_disp != Vector2.ZERO)
+	#	if not player.get_node("Controller").scan_area_body(last_disp, false):  # TODO: remove
+	#		component = last_disp
+
 	if tile_data.get_custom_data("name") != "cart":
 		return component
 
@@ -219,9 +226,16 @@ func control_rail(
 		if dir in rail_control:
 			available_input.append(INPUTS[dir])
 	available_input.erase(-last_disp)
+	if last_disp == Vector2.ZERO and component in available_input:
+		var present_cell = cell + component
+		control_cart(tile_data, cell, present_cell)
+		return component
 	if available_input.size() != 1:
 		return component
 	component = available_input[0]
+
+	var present_cell = cell + component
+	control_cart(tile_data, cell, present_cell)
 
 	return component
 
