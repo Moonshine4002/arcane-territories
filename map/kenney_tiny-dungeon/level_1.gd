@@ -97,20 +97,35 @@ func add_player(cell: Vector2, player = null):
 
 		if player.name == "Player9":
 			player.controller_switch_dynamic()
+			var camera = Camera2D.new()
+			camera.name = "Camera"
+			camera.limit_left = 0
+			camera.limit_top = 0
+			#camera.position_smoothing_enabled = true
+			#camera.position_smoothing_speed = 0
+			player.get_node("Controller").add_child(camera)  # TODO: remove
 
+	var controller = player.get_node("Controller")  # TODO: remove
 	if player:
-		player.get_node("Controller").pressed = false  # TODO: remove
-		player.get_node("Controller").last_input = Vector2.ZERO  # TODO: remove
-		player.get_node("Controller").last_disp = Vector2.ZERO  # TODO: remove
+		controller.pressed = false
+		controller.last_input = Vector2.ZERO
+		controller.last_disp = Vector2.ZERO
 
 	player.connect_controller(_on_controller_player_request)
 
 	add_child(player)
-	player.get_node("Controller").move_to_cell(cell, 0)  # TODO: remove
-	player.get_node("Controller").z_index = 1  # TODO: remove
+	controller.move_to_cell(cell, 0)
+	controller.z_index = 1
 
 
 func remove_player(player: Node):
+	var controller = player.get_node("Controller")  # TODO: remove
+	var camera = controller.get_node("Camera")  # TODO: remove
+	player.data["camera.global_position"] = camera.global_position
+	print(camera.offset)
+	print(camera.position)
+	print(camera.global_position)
+
 	player.disconnect_controller(_on_controller_player_request)
 	remove_child(player)
 
