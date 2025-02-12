@@ -107,6 +107,7 @@ func add_player(cell: Vector2, player = null):
 
 	add_child(player)
 	player.get_node("Controller").move_to_cell(cell, 0)  # TODO: remove
+	player.get_node("Controller").z_index = 1  # TODO: remove
 
 
 func remove_player(player: Node):
@@ -143,7 +144,7 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 			if shift:
 				speed *= 0.3
 
-			component = control_rail(player, cell, tile_data, component, last_disp)#, pressed)
+			component = control_rail(player, cell, tile_data, component, last_disp)  #, pressed)
 			var present_cell = cell + component
 
 			var teleport_flag = false
