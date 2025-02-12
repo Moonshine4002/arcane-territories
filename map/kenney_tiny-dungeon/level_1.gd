@@ -259,19 +259,30 @@ func control_rail(
 func control_cart(tile_data: TileData, cell: Vector2, present_cell: Vector2) -> void:
 	if cell == present_cell:
 		return
-	if tile_data.get_custom_data("name") == "cart":
-		var rail_data = rail_tile.get_cell_tile_data(present_cell)
-		var object_data = object_tile.get_cell_tile_data(present_cell)
-		if not rail_data:
-			return
-		if rail_data.get_custom_data("name") == "rail_straight":
-			if not object_data or object_data.get_custom_data("name") != "cart":
-				object_tile.erase_cell(cell)
-			object_tile.set_cell(present_cell, source_id, Vector2(6, 4))
-		elif rail_data.get_custom_data("name") == "rail_bent":
-			if not object_data or object_data.get_custom_data("name") != "cart":
-				object_tile.erase_cell(cell)
-			object_tile.set_cell(present_cell, source_id, Vector2(8, 4))
+	if tile_data.get_custom_data("name") != "cart":
+		return
+	var rail_data = rail_tile.get_cell_tile_data(present_cell)
+	var present_data = object_tile.get_cell_tile_data(present_cell)
+	if not rail_data:
+		return
+	if present_data and present_data.get_custom_data("name") == "cart":
+		return
+	var atlas_coords: Vector2
+	if rail_data.get_custom_data("name") == "rail_straight":
+		atlas_coords = Vector2(6, 4)
+	elif rail_data.get_custom_data("name") == "rail_bent":
+		atlas_coords = Vector2(8, 4)
+	tile_move_to(object_tile, cell, present_cell, atlas_coords)
+
+
+func tile_move_to(
+	layer: TileMapLayer, cell: Vector2, present_cell: Vector2, atlas_coords = null
+) -> void:
+	var tile_data := layer.get_cell_tile_data(cell)
+	if atlas_coords == null:
+		atlas_coords = layer.get_cell_atlas_coords(cell)
+	layer.erase_cell(cell)
+	layer.set_cell(present_cell, source_id, atlas_coords)
 
 
 func _notification(what: int) -> void:
