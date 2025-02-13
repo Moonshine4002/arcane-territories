@@ -103,19 +103,31 @@ func _move_to(target: Vector2, duration: float) -> void:
 	moving = false
 
 
-func set_sprite_texture(texture: Texture2D):
-	$Sprite2D.texture = texture
-
-
-func set_sprite_atlas(texture: Texture2D, atlas_cell: Vector2, tile_size: int = tile_size):
-	var atlas := AtlasTexture.new()
-	atlas.atlas = texture
-	atlas.region = Rect2(
-		atlas_cell * tile_size,
-		Vector2(tile_size, tile_size),
+func set_sprite_atlas(texture: Texture2D, atlas_cells, tile_size: int = tile_size):
+	if atlas_cells is not Array:
+		atlas_cells = [atlas_cells]
+	enumerate(
+		atlas_cells,
+		func(i, atlas_cell):
+			if atlas_cell is String:
+				atlas_cell = str_to_var("Vector2" + atlas_cell)
+			var atlas := AtlasTexture.new()
+			atlas.atlas = texture
+			atlas.region = Rect2(
+				atlas_cell * tile_size,
+				Vector2(tile_size, tile_size),
+			)
+			add_sprite(atlas, var_to_str(i))
 	)
-	$Sprite2D.texture = atlas
-	#$Sprite2D.scale = Vector2.ONE
+
+
+func add_sprite(texture, name: String = "", scale: Vector2 = Vector2.ONE):
+	var sprite = Sprite2D.new()
+	sprite.texture = texture
+	if name != "":
+		sprite.name = name
+	sprite.scale = scale
+	add_child(sprite)
 
 
 func scan_area_body(target_cell_inc: Vector2, emit: bool = true) -> bool:
@@ -167,3 +179,8 @@ func _scan(
 	if emit:
 		player_request.emit(player, "ray_cast", [collider])
 	return true
+
+
+func enumerate(array: Array, fun: Callable):
+	for i in range(len(array)):
+		fun.call(i, array[i])

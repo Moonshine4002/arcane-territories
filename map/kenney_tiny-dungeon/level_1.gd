@@ -10,7 +10,6 @@ var source_id = 0
 @onready var rail_tile: TileMapLayer = $Rail
 @onready var character_tile: TileMapLayer = $Character
 @onready var object_tile: TileMapLayer = $Object
-@onready var weapon_tile: TileMapLayer = $Weapon
 @onready var tile_set = ground_tile.tile_set
 @onready var atlas_source: TileSetAtlasSource = tile_set.get_source(source_id)
 
@@ -30,6 +29,7 @@ var character_data = {
 		"mana": 10,
 		"speed": 10,
 		"dodge": 10,
+		"weapon": [Vector2(10, 8), Vector2(5, 8)],
 	},
 	"Player9":
 	{
@@ -42,6 +42,7 @@ var character_data = {
 		"mana": 100,
 		"speed": 5,
 		"dodge": 30,
+		"weapon": [Vector2(9, 10)],
 	},
 	"Enemy9":
 	{
@@ -54,6 +55,7 @@ var character_data = {
 		"mana": 1,
 		"speed": 3.3,
 		"dodge": 10,
+		"weapon": [],
 	},
 }
 
@@ -121,11 +123,6 @@ func add_player(cell: Vector2, player = null):
 func remove_player(player: Node):
 	var controller = player.get_node("Controller")  # TODO: remove
 	var camera = controller.get_node("Camera")  # TODO: remove
-	player.data["camera.global_position"] = camera.global_position
-	print(camera.offset)
-	print(camera.position)
-	print(camera.global_position)
-
 	player.disconnect_controller(_on_controller_player_request)
 	remove_child(player)
 
@@ -186,7 +183,16 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 
 		"set_texture":
 			var fun = parameters[0]
-			fun.call(atlas_source.texture, player.data["cell_atlas_coords"])
+			fun.call(
+				atlas_source.texture, [player.data["cell_atlas_coords"]] + player.data["weapon"]
+			)
+			for i in range(len(player.data["weapon"])):
+				i = i + 1
+				var weapon = player.get_node("Controller").get_node(var_to_str(i))
+				if i == 1:
+					weapon.offset += Vector2(8, 2)
+				elif i == 2:
+					weapon.offset += Vector2(-8, 2)
 		"ray_cast":
 			var target = parameters[0].get_parent()
 			print(source, " hit ", target)
@@ -272,10 +278,10 @@ func control_cart(tile_data: TileData, cell: Vector2, present_cell: Vector2) -> 
 		atlas_coords = Vector2(6, 4)
 	elif rail_data.get_custom_data("name") == "rail_bent":
 		atlas_coords = Vector2(8, 4)
-	tile_move_to(object_tile, cell, present_cell, atlas_coords)
+	_tile_move_to(object_tile, cell, present_cell, atlas_coords)
 
 
-func tile_move_to(
+func _tile_move_to(
 	layer: TileMapLayer, cell: Vector2, present_cell: Vector2, atlas_coords = null
 ) -> void:
 	var tile_data := layer.get_cell_tile_data(cell)
