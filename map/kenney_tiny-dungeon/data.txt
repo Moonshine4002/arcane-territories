@@ -1,3 +1,20 @@
-{"name": "Player8","health": 100,"attack": 3,"defense": 3,"level": 10,"experience": 0,"mana": 10,"speed": 10,"dodge": 10,"weapon": ["(10, 8)", "(5, 8)"]}
-{"name": "Player9","health": 100,"attack": 5,"defense": 2,"level": 10,"experience": 0,"mana": 100,"speed": 5,"dodge": 30,"weapon": ["(9, 10)"]}
-{"name": "Enemy9","health": 30,"attack": 5,"defense": 1,"level": 1,"experience": 0,"mana": 1,"speed": 3.3,"dodge": 10,"weapon": []}
+{"name": "Player1","health": 100,"attack": 100,"defense": 5,"level": 15,"experience": 0,"mana": 100,"speed": 10,"dodge": 30,"weapon": ["(10, 10)"]}
+{"name": "Player2","health": 50,"attack": 2,"defense": 1,"level": 1,"experience": 0,"mana": 10,"speed": 5,"dodge": 10,"weapon": []}
+{"name": "Player3","health": 75,"attack": 5,"defense": 3,"level": 5,"experience": 0,"mana": 20,"speed": 10,"dodge": 20,"weapon": []}
+{"name": "Player4","health": 200,"attack": 10,"defense": 5,"level": 5,"experience": 0,"mana": 20,"speed": 8,"dodge": 20,"weapon": ["(8, 8)", "(5, 8)"]}
+{"name": "Player5","health": 100,"attack": 15,"defense": 3,"level": 4,"experience": 0,"mana": 20,"speed": 10,"dodge": 50,"weapon": ["(7, 8)"]}
+{"name": "Player6","health": 300,"attack": 20,"defense": 8,"level": 8,"experience": 0,"mana": 20,"speed": 5,"dodge": 10,"weapon": ["(6, 8)", "(9, 9)"]}
+{"name": "Player7","health": 300,"attack": 15,"defense": 8,"level": 10,"experience": 0,"mana": 20,"speed": 5,"dodge": 10,"weapon": ["(6, 8)", "(11, 8)"]}
+{"name": "Player8","health": 150,"attack": 5,"defense": 5,"level": 1,"experience": 0,"mana": 20,"speed": 8,"dodge": 15,"weapon": ["(10, 8)", "(5, 8)"]}
+{"name": "Player9","health": 75,"attack": 8,"defense": 2,"level": 1,"experience": 0,"mana": 75,"speed": 8,"dodge": 99.9,"weapon": ["(9, 10)"]}
+{"name": "Player10","health": 50,"attack": 3,"defense": 1,"level": 7,"experience": 0,"mana": 75,"speed": 3,"dodge": 30,"weapon": ["(11,10)"]}
+{"name": "Enemy1","health": 5,"attack": 2,"defense": 1,"level": 1,"experience": 0,"mana": 1,"speed": 8,"dodge": 70,"weapon": []}
+{"name": "Enemy2","health": 50,"attack": 5,"defense": 1,"level": 2,"experience": 0,"mana": 5,"speed": 5,"dodge": 10,"weapon": []}
+{"name": "Enemy3","health": 30,"attack": 8,"defense": 5,"level": 3,"experience": 0,"mana": 3,"speed": 5,"dodge": 10,"weapon": []}
+{"name": "Enemy4","health": 50,"attack": 15,"defense": 3,"level": 5,"experience": 0,"mana": 30,"speed": 8,"dodge": 30,"weapon": []}
+{"name": "Enemy5","health": 50,"attack": 10,"defense": 3,"level": 4,"experience": 0,"mana": 10,"speed": 8,"dodge": 10,"weapon": []}
+{"name": "Enemy6","health": 10,"attack": 5,"defense": 1,"level": 1,"experience": 0,"mana": 1,"speed": 20,"dodge": 50,"weapon": []}
+{"name": "Enemy7","health": 5,"attack": 3,"defense": 3,"level": 3,"experience": 0,"mana": 30,"speed": 10,"dodge": 95,"weapon": []}
+{"name": "Enemy8","health": 20,"attack": 8,"defense": 2,"level": 3,"experience": 0,"mana": 3,"speed": 8,"dodge": 20,"weapon": []}
+{"name": "Enemy9","health": 20,"attack": 5,"defense": 2,"level": 1,"experience": 0,"mana": 1,"speed": 5,"dodge": 20,"weapon": []}
+{"name": "Enemy10","health": 30,"attack": 8,"defense": 3,"level": 3,"experience": 0,"mana": 1,"speed": 5,"dodge": 30,"weapon": []}

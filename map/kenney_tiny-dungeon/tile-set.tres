@@ -479,6 +479,7 @@ texture = ExtResource("1_c35so")
 4:6/0 = 0
 4:6/0/custom_data_1 = 0.1
 4:7/0 = 0
+4:7/0/custom_data_0 = "Player5"
 4:7/0/custom_data_1 = 1.0
 4:8/0 = 0
 4:8/0/custom_data_0 = "Player10"
