@@ -7,13 +7,13 @@ var scenes_connection := {}
 func _ready() -> void:
 	add_current_scene("Level1", "res://map/kenney_tiny-dungeon/level_1.tscn")
 	scenes["Level1"].connect_level(_on_level_level_request)
-	add_current_scene("Level12", "res://map/kenney_tiny-dungeon/level_1.tscn")
+	add_current_scene("Level12", "res://map/kenney_tiny-dungeon/level_2.tscn")
 	scenes["Level12"].position = Vector2(16 * 25, 16 * 0)
 	scenes["Level12"].connect_level(_on_level_level_request)
-	add_current_scene("Level13", "res://map/kenney_tiny-dungeon/level_1.tscn")
+	add_current_scene("Level13", "res://map/kenney_tiny-dungeon/level_3.tscn")
 	scenes["Level13"].position = Vector2(16 * 0, 16 * 25)
 	scenes["Level13"].connect_level(_on_level_level_request)
-	add_current_scene("Level14", "res://map/kenney_tiny-dungeon/level_1.tscn")
+	add_current_scene("Level14", "res://map/kenney_tiny-dungeon/level_4.tscn")
 	scenes["Level14"].position = Vector2(16 * 25, 16 * 25)
 	scenes["Level14"].connect_level(_on_level_level_request)
 	scenes_connection["Level1"] = {
