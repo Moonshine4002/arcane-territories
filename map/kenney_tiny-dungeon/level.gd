@@ -16,49 +16,6 @@ var source_id = 0
 # save
 @onready var path: String = "user:/" + str(get_path()).trim_prefix("/root/Main") + "/data.save"
 
-# character
-var character_data = {
-	"Player8":
-	{
-		"name": "Player8",
-		"health": 100,
-		"attack": 3,
-		"defense": 3,
-		"level": 10,
-		"experience": 0,
-		"mana": 10,
-		"speed": 10,
-		"dodge": 10,
-		"weapon": [Vector2(10, 8), Vector2(5, 8)],
-	},
-	"Player9":
-	{
-		"name": "Player9",
-		"health": 100,
-		"attack": 5,
-		"defense": 2,
-		"level": 10,
-		"experience": 0,
-		"mana": 100,
-		"speed": 5,
-		"dodge": 30,
-		"weapon": [Vector2(9, 10)],
-	},
-	"Enemy9":
-	{
-		"name": "Enemy9",
-		"health": 30,
-		"attack": 5,
-		"defense": 1,
-		"level": 1,
-		"experience": 0,
-		"mana": 1,
-		"speed": 3.3,
-		"dodge": 10,
-		"weapon": [],
-	},
-}
-
 
 func _ready() -> void:
 	if name != "Level1":
@@ -313,7 +270,7 @@ func save_game(path: String) -> void:
 
 func load_game(path: String) -> Dictionary:
 	if not FileAccess.file_exists(path):
-		return character_data
+		path = "res://map/kenney_tiny-dungeon/data.txt"
 	#var save_nodes = get_tree().get_nodes_in_group("Persist")
 	#for i in save_nodes:
 	#	i.queue_free()
