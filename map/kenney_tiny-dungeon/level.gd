@@ -195,16 +195,18 @@ func _on_controller_player_request(source: Node, type: String, parameters: Array
 					weapon.offset += Vector2(-8, 2)
 		"ray_cast":
 			var target = parameters[0].get_parent()
-			print(source, " hit ", target)
-			print("source.name = ", source.name)
+			level_request.emit(self, "display", [source.name, " hit ", target.name])
 			if randf() * 100 < target.data["dodge"]:
-				print(target.name, " dodged")
+				level_request.emit(self, "display", [target.name, " dodged"])
 			else:
 				target.data["health"] -= source.data["attack"] - target.data["defense"]
-			print("source.data.health = ", source.data["health"])
+			level_request.emit(
+				self, "display", [source.name, "'s health = ", source.data["health"]]
+			)
 			if target.data["health"] <= 0:
-				print(target.name, " is defeated")
+				level_request.emit(self, "display", [target.name, " is defeated"])
 				target.queue_free()
+
 		#"add_player":
 		#	add_child(player)
 		#"remove_player":

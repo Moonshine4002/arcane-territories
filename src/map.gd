@@ -1,5 +1,7 @@
 extends Node2D
 
+signal map_request(source: Node, type: String, parameters: Array)
+
 var scenes := {}
 var scenes_connection := {}
 
@@ -46,6 +48,10 @@ func _process(delta: float) -> void:
 	pass
 
 
+func connect_map(fun: Callable) -> void:
+	self.connect("map_request", fun)
+
+
 func add_current_scene(name: String, path: String):
 	var current_scene = load(path).instantiate()
 	current_scene.name = name
@@ -64,5 +70,7 @@ func _on_level_level_request(source: Node, type: String, parameters: Array) -> v
 				return
 			source.remove_player(player)
 			target.add_player(cell, player)
+		"display":
+			map_request.emit(source, type, parameters)
 		_:
 			assert(false)
