@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://dtj3qxow4v6cs"]
+
+[ext_resource type="Script" path="res://old/src/controller-static.gd" id="1_ynhw0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiu1"]
+size = Vector2(2, 2)
+
+[node name="Controller" type="Area2D"]
+script = ExtResource("1_ynhw0")
+metadata/_edit_group_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_jkiu1")
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
