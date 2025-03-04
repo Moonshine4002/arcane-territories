@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://buv1djus840st"]
+
+[ext_resource type="Script" path="res://main.gd" id="1_enwgw"]
+[ext_resource type="PackedScene" uid="uid://bc6y8n2n8pqlm" path="res://src/domain.tscn" id="1_mpopt"]
+[ext_resource type="PackedScene" uid="uid://mwkjoq2dh78" path="res://src/attribute.tscn" id="3_wayxd"]
+
+[node name="Main" type="Node"]
+script = ExtResource("1_enwgw")
+
+[node name="Domain" parent="." instance=ExtResource("1_mpopt")]
+
+[node name="Player" type="Node" parent="."]
+
+[node name="Attribute" parent="Player" instance=ExtResource("3_wayxd")]
