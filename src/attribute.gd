@@ -7,7 +7,7 @@ var data := {}
 
 
 func _ready() -> void:
-	Log.s_assert(domain != null, Log.ErrorCode.INITIALIZATION, "No domain available!")
+	Console.assertion(domain != null, "No domain available!")
 
 
 func _process(_delta: float) -> void:

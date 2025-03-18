@@ -1,5 +1,7 @@
 # Credit
 
 ## Mystical Crystal Ball
+- Author: baccessory
 - Website: https://www.cleanpng.com/png-mystical-crystal-ball-glass-orb-illuminated-glowin-8006335/
+- License: DMCA
 - Origin File Name: transparent-mystical-crystal-ball-glass-orb-illuminated-glowin-ethereal-glass-orb-illuminated-by-light65fa5c19e62d40.69282229.png
