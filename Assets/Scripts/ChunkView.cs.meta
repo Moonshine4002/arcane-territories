@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cb3f85f8b167d224cba753a513fad880
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - material: {instanceID: 0}
+  - meshFilter: {instanceID: 0}
+  - meshRenderer: {instanceID: 0}
+  - meshCollider: {instanceID: 0}
+  - atlas: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -147,12 +147,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d21c9d1118d24d740b8a1ea728264e27, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Terrain
+  m_EditorClassIdentifier: Assembly-CSharp::Main
   seed: 0
   seedRange: 100
-  chunk: 16
+  chunkSize: 16
   width: 64
   height: 48
+  map: {fileID: 0}
   scaleMicro: 0.2
   scaleMeso: 0.02
   scaleMacro: 0.002
@@ -162,17 +163,17 @@ MonoBehaviour:
   scaleSlopeMesoRight: 0.03
   scaleSlopeMacroLeft: -0.2
   scaleSlopeMacroRight: 0.3
-  scaleCave: 0.05
+  scaleCave: 0.02
   oddCave: 0.25
+  scaleOre: 0.05
   scaleBiomeX: 0.002
   scaleBiomeY: 0.001
-  oddWater: 0.5
-  oddFire: 0.5
-  oddAir: 0.5
-  oddEarth: 0.5
-  oddLight: 0.5
-  oddLife: 0.5
-  map: {fileID: 0}
+  oddWater: 0.2
+  oddFire: 0.2
+  oddAir: 0.2
+  oddEarth: 0.2
+  oddLight: 0.2
+  oddLife: 0.2
 --- !u!4 &702014924
 Transform:
   m_ObjectHideFlags: 0
