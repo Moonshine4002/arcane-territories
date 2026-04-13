@@ -4,11 +4,11 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - material: {instanceID: 0}
+  - mesh: {instanceID: 0}
+  - atlas: {fileID: 100100200, guid: df464a403f8068b439bf328cecd870f2, type: 3}
   - meshFilter: {instanceID: 0}
   - meshRenderer: {instanceID: 0}
   - meshCollider: {instanceID: 0}
-  - atlas: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

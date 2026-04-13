@@ -19,7 +19,7 @@ public class Chunk
                 Vector2Int worldCoord = LocalToWorld(new Vector2Int(x, y));
                 Color color = tex.GetPixel(worldCoord.x, worldCoord.y);
                 SetTile(x, y, 0, 0);  // TODO
-                foreach (var kvp in TileDatabase.tiles)
+                foreach (var kvp in TileDatabase.tileTypes)
                 {
                     if (Vector4.Distance(kvp.Value.color, color) >= 0.01f)
                         continue;

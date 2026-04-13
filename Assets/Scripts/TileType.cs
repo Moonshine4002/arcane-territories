@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.U2D;
 
 [CreateAssetMenu(menuName = "Tile/TileType")]
 public class TileType : ScriptableObject
@@ -11,11 +11,15 @@ public class TileType : ScriptableObject
 
     public bool isSolid;
 
-    public SpriteAtlas atlas;
-    public string[] sprites;
-
-    public Sprite GetSprite()
+    public List<string> spriteNames;
+    [NonSerialized]
+    public List<Sprite> sprites = new List<Sprite>();
+    
+    public void Init()
     {
-        return atlas.GetSprite(sprites[0]);
+        foreach (string name in spriteNames)
+        {
+            sprites.Add(TileDatabase.atlas.GetSprite(name));
+        }
     }
 }

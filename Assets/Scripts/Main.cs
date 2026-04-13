@@ -33,6 +33,8 @@ public class Main : MonoBehaviour
     public float oddLight = 0.2f;
     public float oddLife = 0.2f;
 
+    public Vector2 pos = new Vector2(0, 0);
+
     void Awake()
     {
         TileDatabase.Init();
@@ -54,7 +56,8 @@ public class Main : MonoBehaviour
 
     void Update()
     {
-        Vector2 pos = new Vector2(0, 0);
+        if (pos.x <= 1000)
+            pos.x += 1f;
         Render(pos);  // TODO
     }
 
@@ -173,8 +176,7 @@ public class Main : MonoBehaviour
                     obj.transform.position = new Vector2(x * chunkSize, y * chunkSize);
                     ChunkView chunkView = obj.AddComponent<ChunkView>();
                     chunkView.Init(chunk);
-                    Mesh mesh = MeshBuilder.Chunk(chunk);
-                    chunkView.SetMesh(mesh);
+                    MeshBuilder.Build(chunk, chunkView);
                     chunkViews.Add(coord, chunkView);
                 }
             }
@@ -183,7 +185,8 @@ public class Main : MonoBehaviour
         List<Vector2Int> toRemove = new List<Vector2Int>();
         foreach (var kvp in chunkViews)
         {
-            if (Vector2Int.Distance(kvp.Key, chunkCoord) > distanceRender)
+            //if (Vector2Int.Distance(kvp.Key, chunkCoord) > distanceRender)
+            if (Mathf.Abs(kvp.Key.x - chunkCoord.x) > distanceRender || Mathf.Abs(kvp.Key.y - chunkCoord.y) > distanceRender)
             {
                 Destroy(kvp.Value.gameObject);
                 toRemove.Add(kvp.Key);
@@ -199,8 +202,7 @@ public class Main : MonoBehaviour
             Chunk chunk = chunks[kvp.Key];
             if (chunk.isDirty)
             {
-                Mesh mesh = MeshBuilder.Chunk(chunk);
-                kvp.Value.SetMesh(mesh);
+                MeshBuilder.Build(chunk, kvp.Value);
                 chunk.isDirty = false;
             }
         }

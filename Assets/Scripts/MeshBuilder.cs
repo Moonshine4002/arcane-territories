@@ -7,7 +7,7 @@ static public class MeshBuilder
     static public List<int> triangles = new List<int>();
     static public List<Vector2> uvs = new List<Vector2>();
 
-    static public Mesh Chunk(Chunk chunk)
+    static public void Build(Chunk chunk, ChunkView view)
     {
         vertices.Clear();
         triangles.Clear();
@@ -22,14 +22,7 @@ static public class MeshBuilder
                 AddQuad(x, y, tile);
             }
         }
-        Mesh mesh = new Mesh
-        {
-            vertices = vertices.ToArray(),
-            triangles = triangles.ToArray(),
-            uv = uvs.ToArray(),
-        };
-        // mesh.RecalculateNormals();
-        return mesh;
+        view.SetMesh(vertices, triangles, uvs);
     }
 
     static void AddQuad(int x, int y, Tile tile)
@@ -50,7 +43,7 @@ static public class MeshBuilder
         triangles.Add(index + 2);
 
         TileType tileType = TileDatabase.Get(tile.type);
-        Sprite sprite = tileType.atlas.GetSprite(tileType.sprites[tile.variant]);
+        Sprite sprite = tileType.sprites[tile.variant];
         Vector2[] spriteUV = sprite.uv;
         uvs.Add(spriteUV[2]);
         uvs.Add(spriteUV[3]);

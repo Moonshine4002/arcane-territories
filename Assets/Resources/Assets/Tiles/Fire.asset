@@ -15,6 +15,6 @@ MonoBehaviour:
   id: 2
   color: {r: 0.9, g: 0.2, b: 0.1, a: 1}
   isSolid: 0
-  atlas: {fileID: 100100200, guid: df464a403f8068b439bf328cecd870f2, type: 3}
-  sprites:
+  spriteNames:
   - stone_browniron
+  sprites: []

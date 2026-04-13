@@ -1,21 +1,29 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class TileDatabase
 {
-    public static Dictionary<int, TileType> tiles;
+    static public SpriteAtlas atlas;
+    static public Texture2D tex;
+
+    public static Dictionary<int, TileType> tileTypes;
 
     public static void Init()
     {
-        tiles = new Dictionary<int, TileType>();
-        foreach (var tile in Resources.LoadAll<TileType>("Assets/Tiles"))
+        atlas = Resources.Load<SpriteAtlas>("Sprites/kenney_voxel-pack");
+        tex = atlas.GetSprite("stone").texture;  // TODO
+
+        tileTypes = new Dictionary<int, TileType>();
+        foreach (var tileType in Resources.LoadAll<TileType>("Assets/Tiles"))
         {
-            tiles[tile.id] = tile;
+            tileType.Init();
+            tileTypes[tileType.id] = tileType;
         }
     }
 
     public static TileType Get(int id)
     {
-        return tiles[id];
+        return tileTypes[id];
     }
 }
