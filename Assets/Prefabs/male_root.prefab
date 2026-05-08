@@ -317,14 +317,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   speed: 7
   jumpForce: 15
-  rb: {fileID: 0}
-  bc: {fileID: 0}
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  anim: {fileID: 0}
   move: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  moveInput: {x: 0, y: 0}
   jump: {fileID: -2099379676528639254, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!114 &2784439646820757982
 MonoBehaviour:
@@ -639,7 +635,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -1
+  m_SortingOrder: -2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3005807791144545963, guid: 27085c1983e1719478924a582fcd8e08, type: 3}
   m_Color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
@@ -730,7 +726,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -2
+  m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 3005807791144545963, guid: 27085c1983e1719478924a582fcd8e08, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

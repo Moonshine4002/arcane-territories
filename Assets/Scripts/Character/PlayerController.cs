@@ -3,19 +3,19 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 1f;
-    public float jumpForce = 1f;
+    [SerializeField] private float speed = 1f;
+    [SerializeField] private float jumpForce = 1f;
 
-    public Rigidbody2D rb;
-    public BoxCollider2D bc;
-    public LayerMask groundLayer;
-    public Animator anim;
-    public InputActionReference move;
-    public Vector2 moveInput;
-    public InputActionReference jump;
-    //public bool jumpInput;
+    private Rigidbody2D rb;
+    private BoxCollider2D bc;
+    [SerializeField] private LayerMask groundLayer;
+    private Animator anim;
+    [SerializeField] private InputActionReference move;
+    private Vector2 moveInput;
+    [SerializeField] private InputActionReference jump;
+    //private bool jumpInput;
 
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         bc = GetComponent<BoxCollider2D>();
@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
         anim.SetTrigger("jump");
     }
 
-    public bool IsGrounded()
+    private bool IsGrounded()
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;

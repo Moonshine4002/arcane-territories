@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    public Transform target;
-    public float smoothTime = 0.2f;
+    [SerializeField] private Transform target;
+    [SerializeField] private float smoothTime = 0.2f;
     private Vector3 velocity = Vector3.zero;
 
     void LateUpdate()
