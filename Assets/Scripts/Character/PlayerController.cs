@@ -3,8 +3,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 1f;
-    [SerializeField] private float jumpForce = 1f;
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpForce;
 
     private Rigidbody2D rb;
     private BoxCollider2D bc;
@@ -33,18 +33,18 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
         rb.linearVelocityX = moveInput.x * speed;
-        if (rb.linearVelocityX > 0)
+        if (rb.linearVelocityX > 0.1f)
             transform.localScale = new Vector3(1, 1, 1);
-        else if (rb.linearVelocityX < 0)
+        else if (rb.linearVelocityX < -0.1f)
             transform.localScale = new Vector3(-1, 1, 1);
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
         jump.action.started += Jump;
     }
 
-    private void OnDisable()
+    void OnDisable()
     {
         jump.action.started -= Jump;
     }
