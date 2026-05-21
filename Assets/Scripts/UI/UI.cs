@@ -12,7 +12,7 @@ public class UI : MonoBehaviour
     void Update()  // TODO: event
     {
         RefreshHearts();
-        for(int i = 0; i < hearts.Count; i++)
+        for (int i = 0; i < hearts.Count; i++)
         {
             float remain = status.health - i;
             hearts[i].fillAmount = Mathf.Clamp01(remain);
