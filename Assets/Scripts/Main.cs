@@ -3,9 +3,10 @@ using UnityEngine;
 
 public class Main : MonoBehaviour
 {
+    public static WorldConfig Config;
+
     public int seed;
     public int seedRange = 100;
-    public int chunkSize = 16;  // TODO: to config
     public int width = 64;
     public int height = 48;
     public Texture2D map;
@@ -38,6 +39,8 @@ public class Main : MonoBehaviour
 
     void Awake()
     {
+        if (Config == null)
+            Config = Resources.Load<WorldConfig>("Configs/World");
         TileDatabase.Init();
     }
 
@@ -50,10 +53,10 @@ public class Main : MonoBehaviour
         Generate();
     }
 
-    void OnValidate()
-    {
-        Generate();
-    }
+    //void OnValidate()
+    //{
+    //    Generate();
+    //}
 
     void Update()
     {
@@ -79,7 +82,8 @@ public class Main : MonoBehaviour
         int seedEarthBiome = GetSeed(seed, "earthBiome");
         int seedLightBiome = GetSeed(seed, "lightBiome");
         int seedLifeBiome = GetSeed(seed, "lifeBiome");
-        map = new Texture2D(width * chunkSize, height * chunkSize);
+        Vector2Int size = ChunkCoord.ChunkToWorld(new Vector2Int(width, height));
+        map = new Texture2D(size.x, size.y);
         float seaLevel = Mathf.Lerp(0.5f, 0.7f, Perlin(0, 0, seedSeaLevel, 0, 0));
         for (int x = 0; x < map.width; x++)
         {
@@ -149,10 +153,7 @@ public class Main : MonoBehaviour
     {
         int distanceUpdate = 16;
         int distanceRender = 3;
-        Vector2Int chunkCoord = new Vector2Int(
-            Mathf.FloorToInt(pos.x / chunkSize),
-            Mathf.FloorToInt(pos.y / chunkSize)
-        );
+        Vector2Int chunkCoord = ChunkCoord.WorldToChunk(Vector2Int.FloorToInt(pos));
         if (lastChunkCoord == chunkCoord)
             return;
         else
@@ -181,7 +182,7 @@ public class Main : MonoBehaviour
             {
                 GameObject obj = new GameObject($"Chunk ({coord.x}, {coord.y})");
                 obj.transform.parent = transform;
-                obj.transform.position = new Vector2(coord.x * chunkSize, coord.y * chunkSize);
+                obj.transform.position = (Vector2)ChunkCoord.ChunkToWorld(coord);
                 chunkView = obj.AddComponent<ChunkView>();
                 chunkView.Init(chunk);
                 chunkViews.Add(coord, chunkView);

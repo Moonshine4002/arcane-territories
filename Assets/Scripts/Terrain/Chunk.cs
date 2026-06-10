@@ -3,14 +3,10 @@ using UnityEngine;
 
 public class Chunk
 {
+    public int size => Main.Config.chunkSize;
     public Vector2Int coord;
     public Tile[,] tiles;
-    public int size = 16;  // TODO: to config
     public bool isDirty = true;
-
-    public List<Vector3> vertices = new List<Vector3>();
-    public List<int> triangles = new List<int>();
-    public List<Vector2> uvs = new List<Vector2>();
 
     public Chunk(Vector2Int coord, Texture2D tex)
     {
@@ -29,23 +25,6 @@ public class Chunk
                         continue;
                     SetTile(x, y, kvp.Value.id, 0);  // TODO
                 }
-            }
-        }
-    }
-
-    public void Cleanse()
-    {
-        vertices.Clear();
-        triangles.Clear();
-        uvs.Clear();
-        for (int x = 0; x < size; x++)
-        {
-            for (int y = 0; y < size; y++)
-            {
-                Tile tile = tiles[x, y];
-                if (tile.type == 0)
-                    continue;
-                AddQuad(x, y, tile);
             }
         }
     }
@@ -90,7 +69,6 @@ public class Chunk
     {
         int localX = worldCoord.x - coord.x * size;
         int localY = worldCoord.y - coord.y * size;
-
         return new Vector2Int(localX, localY);
     }
 
@@ -98,11 +76,31 @@ public class Chunk
     {
         int worldX = coord.x * size + localCoord.x;
         int worldY = coord.y * size + localCoord.y;
-
         return new Vector2Int(worldX, worldY);
     }
 
-    void AddQuad(int x, int y, Tile tile)
+    public List<Vector3> vertices = new List<Vector3>();
+    public List<int> triangles = new List<int>();
+    public List<Vector2> uvs = new List<Vector2>();
+
+    public void Cleanse()
+    {
+        vertices.Clear();
+        triangles.Clear();
+        uvs.Clear();
+        for (int x = 0; x < size; x++)
+        {
+            for (int y = 0; y < size; y++)
+            {
+                Tile tile = tiles[x, y];
+                if (tile.type == 0)
+                    continue;
+                AddQuad(x, y, tile);
+            }
+        }
+    }
+
+    public void AddQuad(int x, int y, Tile tile)
     {
         int index = vertices.Count;
 
@@ -126,5 +124,24 @@ public class Chunk
         uvs.Add(spriteUV[3]);
         uvs.Add(spriteUV[0]);
         uvs.Add(spriteUV[1]);
+    }
+}
+
+public static class ChunkCoord
+{
+    public static int Size => Main.Config.chunkSize;
+
+    public static Vector2Int WorldToChunk(Vector2Int worldCoord)
+    {
+        int chunkX = Mathf.FloorToInt((float)worldCoord.x / Size);
+        int chunkY = Mathf.FloorToInt((float)worldCoord.y / Size);
+        return new Vector2Int(chunkX, chunkY);
+    }
+
+    public static Vector2Int ChunkToWorld(Vector2Int chunkCoord)
+    {
+        int worldX = chunkCoord.x * Size;
+        int worldY = chunkCoord.y * Size;
+        return new Vector2Int(worldX, worldY);
     }
 }
