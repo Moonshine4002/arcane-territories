@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
 public class ChunkView : MonoBehaviour
 {
     public Chunk chunk;
@@ -14,44 +14,35 @@ public class ChunkView : MonoBehaviour
     {
         if (sharedMaterial == null)
             sharedMaterial = new Material(Shader.Find("Sprites/Default"));
-    }
+        sharedMaterial.mainTexture = TileDatabase.tex;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
+        meshFilter = GetComponent<MeshFilter>();
+        meshRenderer = GetComponent<MeshRenderer>();
+        mesh = new Mesh();
+        meshRenderer.material = sharedMaterial;
     }
 
     public void Init(Chunk chunk)
     {
         this.chunk = chunk;
-        meshFilter = gameObject.AddComponent<MeshFilter>();
-        meshRenderer = gameObject.AddComponent<MeshRenderer>();
-        meshCollider = gameObject.AddComponent<MeshCollider>();
+    }
 
-        mesh = new Mesh();
+    public void Cleanse()
+    {
+        if (!chunk.isDirty)
+            return;
+        chunk.Cleanse();
+        chunk.isDirty = false;
+        mesh.Clear();
+        mesh.SetVertices(chunk.vertices);
+        mesh.SetTriangles(chunk.triangles, 0);
+        mesh.SetUVs(0, chunk.uvs);
+        // mesh.RecalculateNormals();
         meshFilter.sharedMesh = mesh;
-        meshCollider.sharedMesh = mesh;
-        meshRenderer.material = sharedMaterial;
-
-        sharedMaterial.mainTexture = TileDatabase.tex;
     }
 
     void OnDestroy()
     {
         Destroy(mesh);
-    }
-
-    public void SetMesh(List<Vector3> vertices, List<int> triangles, List<Vector2> uvs)
-    {
-        mesh.Clear();
-        mesh.SetVertices(vertices);
-        mesh.SetTriangles(triangles, 0);
-        mesh.SetUVs(0, uvs);
-        // mesh.RecalculateNormals();
     }
 }

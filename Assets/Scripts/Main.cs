@@ -33,7 +33,8 @@ public class Main : MonoBehaviour
     public float oddLight = 0.2f;
     public float oddLife = 0.2f;
 
-    public Vector2 pos = new Vector2(0, 0);
+    public Transform player;
+    public Vector2Int lastChunkCoord;
 
     void Awake()
     {
@@ -56,9 +57,7 @@ public class Main : MonoBehaviour
 
     void Update()
     {
-        if (pos.x <= 1000)
-            pos.x += 1f;
-        Render(pos);  // TODO
+        Render(player.position);
     }
 
     void Generate()
@@ -154,57 +153,48 @@ public class Main : MonoBehaviour
             Mathf.FloorToInt(pos.x / chunkSize),
             Mathf.FloorToInt(pos.y / chunkSize)
         );
-        
+        if (lastChunkCoord == chunkCoord)
+            return;
+        else
+            lastChunkCoord = chunkCoord;
+
+        HashSet<Vector2Int> visibleChunks = new HashSet<Vector2Int>();
         for (int x = chunkCoord.x - distanceRender; x <= chunkCoord.x + distanceRender; x++)
         {
             for (int y = chunkCoord.y - distanceRender; y <= chunkCoord.y + distanceRender; y++)
             {
-                Vector2Int coord = new Vector2Int(x, y);
-                Chunk chunk;
-                if (!chunks.ContainsKey(coord))
-                {
-                    chunk = new Chunk(coord, map);
-                    chunks.Add(coord, chunk);
-                }
-                else
-                    chunk = chunks[coord];
-
-                if (!chunkViews.ContainsKey(coord))
-                {
-                    GameObject obj = new GameObject($"Chunk ({x}, {y})");
-                    obj.transform.parent = transform;
-                    obj.transform.position = new Vector2(x * chunkSize, y * chunkSize);
-                    ChunkView chunkView = obj.AddComponent<ChunkView>();
-                    chunkView.Init(chunk);
-                    MeshBuilder.Build(chunk, chunkView);
-                    chunkViews.Add(coord, chunkView);
-                }
+                visibleChunks.Add(new Vector2Int(x, y));
             }
         }
 
-        List<Vector2Int> toRemove = new List<Vector2Int>();
-        foreach (var kvp in chunkViews)
+        foreach (var coord in visibleChunks)
         {
-            //if (Vector2Int.Distance(kvp.Key, chunkCoord) > distanceRender)
-            if (Mathf.Abs(kvp.Key.x - chunkCoord.x) > distanceRender || Mathf.Abs(kvp.Key.y - chunkCoord.y) > distanceRender)
+            Chunk chunk;
+            if (!chunks.TryGetValue(coord, out chunk))
             {
-                Destroy(kvp.Value.gameObject);
-                toRemove.Add(kvp.Key);
+                chunk = new Chunk(coord, map);
+                chunks.Add(coord, chunk);
             }
+
+            ChunkView chunkView;
+            if (!chunkViews.TryGetValue(coord, out chunkView))
+            {
+                GameObject obj = new GameObject($"Chunk ({coord.x}, {coord.y})");
+                obj.transform.parent = transform;
+                obj.transform.position = new Vector2(coord.x * chunkSize, coord.y * chunkSize);
+                chunkView = obj.AddComponent<ChunkView>();
+                chunkView.Init(chunk);
+                chunkViews.Add(coord, chunkView);
+            }
+            chunkView.Cleanse();
         }
+
+        HashSet<Vector2Int> toRemove = new HashSet<Vector2Int>(chunkViews.Keys);
+        toRemove.ExceptWith(visibleChunks);
         foreach (var key in toRemove)
         {
+            Destroy(chunkViews[key].gameObject);
             chunkViews.Remove(key);
-        }
-
-        foreach (var kvp in chunkViews)
-        {
-            Chunk chunk = chunks[kvp.Key];
-            if (chunk.isDirty)
-            {
-                MeshBuilder.Build(chunk, kvp.Value);
-                chunk.isDirty = false;
-            }
         }
     }
 }

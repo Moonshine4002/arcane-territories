@@ -11,11 +11,11 @@ public class TileDatabase
 
     public static void Init()
     {
-        atlas = Resources.Load<SpriteAtlas>("Sprites/kenney_voxel-pack");
+        atlas = Resources.Load<SpriteAtlas>("kenney_voxel-pack");
         tex = atlas.GetSprite("stone").texture;  // TODO
 
         tileTypes = new Dictionary<int, TileType>();
-        foreach (var tileType in Resources.LoadAll<TileType>("Assets/Tiles"))
+        foreach (var tileType in Resources.LoadAll<TileType>("Tiles"))
         {
             tileType.Init();
             tileTypes[tileType.id] = tileType;
