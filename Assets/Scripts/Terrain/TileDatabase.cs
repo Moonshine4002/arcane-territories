@@ -1,29 +1,35 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
 
 public class TileDatabase
 {
-    static public SpriteAtlas atlas;
-    static public Texture2D tex;
-
-    public static Dictionary<int, TileType> tileTypes;
+    public static SpriteAtlas atlas;
+    public static Texture2D tex;
+    public static Dictionary<string, TileType> tileTypes = new(StringComparer.OrdinalIgnoreCase);
 
     public static void Init()
     {
         atlas = Resources.Load<SpriteAtlas>("kenney_voxel-pack");
-        tex = atlas.GetSprite("stone").texture;  // TODO
-
-        tileTypes = new Dictionary<int, TileType>();
+        Sprite[] allSprites = new Sprite[atlas.spriteCount];
+        atlas.GetSprites(allSprites);
+        tex = allSprites.Length > 0 ? allSprites[0].texture : null;
         foreach (var tileType in Resources.LoadAll<TileType>("Tiles"))
         {
-            tileType.Init();
-            tileTypes[tileType.id] = tileType;
+            tileTypes[tileType.name] = tileType;
+            foreach (var sprite in allSprites)
+            {
+                if (sprite.name.StartsWith(tileType.name, StringComparison.OrdinalIgnoreCase))
+                {
+                    tileType.sprites.Add(sprite);
+                }
+            }
         }
     }
 
-    public static TileType Get(int id)
+    public static TileType Get(string name)
     {
-        return tileTypes[id];
+        return tileTypes[name];
     }
 }

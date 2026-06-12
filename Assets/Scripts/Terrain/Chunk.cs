@@ -18,23 +18,23 @@ public class Chunk
             {
                 Vector2Int worldCoord = LocalToWorld(new Vector2Int(x, y));
                 Color color = tex.GetPixel(worldCoord.x, worldCoord.y);
-                SetTile(x, y, 0, 0);  // TODO
+                SetTile(x, y, "");
                 foreach (var kvp in TileDatabase.tileTypes)
                 {
                     if (Vector4.Distance(kvp.Value.color, color) >= 0.01f)
                         continue;
-                    SetTile(x, y, kvp.Value.id, 0);  // TODO
+                    SetTile(x, y, kvp.Value.name);
                 }
             }
         }
     }
 
-    public bool SetTile(int x, int y, int type, int variant)
+    public bool SetTile(int x, int y, string name)
     {
         if (!InBounds(x, y))
             return false;
 
-        tiles[x, y] = new Tile { type = type, variant = variant };
+        tiles[x, y] = new Tile { name = name };
         isDirty = true;
         return true;
     }
@@ -52,10 +52,10 @@ public class Chunk
         if (!InBounds(x, y))
             return false;
 
-        if (tiles[x, y].type == 0)
+        if (tiles[x, y].name == "")
             return false;
 
-        tiles[x, y] = new Tile { type = 0, variant = 0 };
+        tiles[x, y] = new Tile { name = "" };
         isDirty = true;
         return true;
     }
@@ -93,14 +93,18 @@ public class Chunk
             for (int y = 0; y < size; y++)
             {
                 Tile tile = tiles[x, y];
-                if (tile.type == 0)
+                if (tile.name == "")
                     continue;
-                AddQuad(x, y, tile);
+                TileType tileType = TileDatabase.Get(tile.name);
+                if (tileType.sprites.Count == 0)
+                    continue;
+                Sprite sprite = tileType.sprites[Random.Range(0, tileType.sprites.Count)];
+                AddQuad(x, y, sprite);
             }
         }
     }
 
-    public void AddQuad(int x, int y, Tile tile)
+    public void AddQuad(int x, int y, Sprite sprite)
     {
         int index = vertices.Count;
 
@@ -117,8 +121,6 @@ public class Chunk
         triangles.Add(index + 2);
         triangles.Add(index + 3);
 
-        TileType tileType = TileDatabase.Get(tile.type);
-        Sprite sprite = tileType.sprites[tile.variant];
         Vector2[] spriteUV = sprite.uv;
         uvs.Add(spriteUV[2]);
         uvs.Add(spriteUV[3]);

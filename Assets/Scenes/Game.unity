@@ -210,7 +210,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d21c9d1118d24d740b8a1ea728264e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Main
-  config: {fileID: 11400000, guid: abb71504d3c97e74bb909aed1f02f34b, type: 2}
   seed: 0
   seedRange: 100
   width: 64

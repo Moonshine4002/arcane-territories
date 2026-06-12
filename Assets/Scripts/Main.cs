@@ -170,15 +170,13 @@ public class Main : MonoBehaviour
 
         foreach (var coord in visibleChunks)
         {
-            Chunk chunk;
-            if (!chunks.TryGetValue(coord, out chunk))
+            if (!chunks.TryGetValue(coord, out Chunk chunk))
             {
                 chunk = new Chunk(coord, map);
                 chunks.Add(coord, chunk);
             }
 
-            ChunkView chunkView;
-            if (!chunkViews.TryGetValue(coord, out chunkView))
+            if (!chunkViews.TryGetValue(coord, out ChunkView chunkView))
             {
                 GameObject obj = new GameObject($"Chunk ({coord.x}, {coord.y})");
                 obj.transform.parent = transform;
@@ -187,6 +185,8 @@ public class Main : MonoBehaviour
                 chunkView.Init(chunk);
                 chunkViews.Add(coord, chunkView);
             }
+            else
+                chunkView.gameObject.SetActive(true);
             chunkView.Cleanse();
         }
 
@@ -194,8 +194,7 @@ public class Main : MonoBehaviour
         toRemove.ExceptWith(visibleChunks);
         foreach (var key in toRemove)
         {
-            Destroy(chunkViews[key].gameObject);
-            chunkViews.Remove(key);
+            chunkViews[key].gameObject.SetActive(false);
         }
     }
 }
