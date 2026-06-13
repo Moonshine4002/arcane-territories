@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Stone
   m_EditorClassIdentifier: Assembly-CSharp::TileType
   color: {r: 1, g: 1, b: 1, a: 1}
-  isSolid: 0
+  isSolid: 1

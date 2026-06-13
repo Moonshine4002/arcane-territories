@@ -8,12 +8,16 @@ public class Chunk
     public Tile[,] tiles;
     public bool isDirty = true;
 
+    public List<Vector3> vertices = new();
+    public List<int> triangles = new();
+    public List<Vector2> uvs = new();
+    public bool[,] colliders;
+
     public Chunk(Vector2Int coord, Texture2D tex)
     {
         this.coord = coord;
         tiles = new Tile[size, size];
         for (int x = 0; x < size; x++)
-        {
             for (int y = 0; y < size; y++)
             {
                 Vector2Int worldCoord = LocalToWorld(new Vector2Int(x, y));
@@ -26,7 +30,7 @@ public class Chunk
                     SetTile(x, y, kvp.Value.name);
                 }
             }
-        }
+        colliders = new bool[size, size];
     }
 
     public bool SetTile(int x, int y, string name)
@@ -79,17 +83,13 @@ public class Chunk
         return new Vector2Int(worldX, worldY);
     }
 
-    public List<Vector3> vertices = new List<Vector3>();
-    public List<int> triangles = new List<int>();
-    public List<Vector2> uvs = new List<Vector2>();
-
     public void Cleanse()
     {
         vertices.Clear();
         triangles.Clear();
         uvs.Clear();
+        System.Array.Clear(colliders, 0, colliders.Length);
         for (int x = 0; x < size; x++)
-        {
             for (int y = 0; y < size; y++)
             {
                 Tile tile = tiles[x, y];
@@ -100,8 +100,8 @@ public class Chunk
                     continue;
                 Sprite sprite = tileType.sprites[Random.Range(0, tileType.sprites.Count)];
                 AddQuad(x, y, sprite);
+                colliders[x, y] = tileType.isSolid;
             }
-        }
     }
 
     public void AddQuad(int x, int y, Sprite sprite)

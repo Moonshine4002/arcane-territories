@@ -12,9 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87d486f22c5420a449d4504061c164d6, type: 3}
   m_Name: Air
   m_EditorClassIdentifier: Assembly-CSharp::TileType
-  id: 3
   color: {r: 0.8, g: 0.8, b: 0.9, a: 1}
-  isSolid: 0
-  spriteNames:
-  - stone_silver
-  sprites: []
+  isSolid: 1

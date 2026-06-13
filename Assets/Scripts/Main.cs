@@ -10,8 +10,8 @@ public class Main : MonoBehaviour
     public int width = 64;
     public int height = 48;
     public Texture2D map;
-    public Dictionary<Vector2Int, Chunk> chunks;
-    public Dictionary<Vector2Int, ChunkView> chunkViews;
+    public Dictionary<Vector2Int, Chunk> chunks = new();
+    public Dictionary<Vector2Int, ChunkView> chunkViews = new();
 
     public float scaleMicro = 0.2f;
     public float scaleMeso = 0.02f;
@@ -47,8 +47,6 @@ public class Main : MonoBehaviour
     void Start()
     {
         seed = Random.Range(0, seedRange);
-        chunks = new Dictionary<Vector2Int, Chunk>();
-        chunkViews = new Dictionary<Vector2Int, ChunkView>();
 
         Generate();
     }
@@ -86,7 +84,6 @@ public class Main : MonoBehaviour
         map = new Texture2D(size.x, size.y);
         float seaLevel = Mathf.Lerp(0.5f, 0.7f, Perlin(0, 0, seedSeaLevel, 0, 0));
         for (int x = 0; x < map.width; x++)
-        {
             for (int y = 0; y < map.height; y++)
             {
                 float sampleAltitudeMicro = Mathf.Lerp(scaleSlopeMicroLeft, scaleSlopeMicroRight, Perlin(x, 0, seedAltitudeMicro, scaleMicro, scaleMicro));
@@ -132,7 +129,6 @@ public class Main : MonoBehaviour
                         map.SetPixel(x, y, new Color(1, 1, 1));
                 }
             }
-        }
         map.Apply();
     }
 
@@ -159,14 +155,12 @@ public class Main : MonoBehaviour
         else
             lastChunkCoord = chunkCoord;
 
-        HashSet<Vector2Int> visibleChunks = new HashSet<Vector2Int>();
+        HashSet<Vector2Int> visibleChunks = new();
         for (int x = chunkCoord.x - distanceRender; x <= chunkCoord.x + distanceRender; x++)
-        {
             for (int y = chunkCoord.y - distanceRender; y <= chunkCoord.y + distanceRender; y++)
             {
                 visibleChunks.Add(new Vector2Int(x, y));
             }
-        }
 
         foreach (var coord in visibleChunks)
         {
@@ -181,6 +175,7 @@ public class Main : MonoBehaviour
                 GameObject obj = new GameObject($"Chunk ({coord.x}, {coord.y})");
                 obj.transform.parent = transform;
                 obj.transform.position = (Vector2)ChunkCoord.ChunkToWorld(coord);
+                obj.layer = LayerMask.NameToLayer("Ground");
                 chunkView = obj.AddComponent<ChunkView>();
                 chunkView.Init(chunk);
                 chunkViews.Add(coord, chunkView);

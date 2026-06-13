@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpForce;
 
     private Rigidbody2D rb;
-    private BoxCollider2D bc;
+    private BoxCollider2D col;
     [SerializeField] private LayerMask groundLayer;
     private Animator anim;
     [SerializeField] private InputActionReference move;
@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        bc = GetComponent<BoxCollider2D>();
+        col = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
     }
 
@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
 
     private bool IsGrounded()
     {
-        RaycastHit2D raycastHit = Physics2D.BoxCast(bc.bounds.center, bc.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+        RaycastHit2D raycastHit = Physics2D.BoxCast(col.bounds.center, col.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;
     }
 }
